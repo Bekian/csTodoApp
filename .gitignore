@@ -1,2 +1,4 @@
 /.vscode
 /CSTodoApp.sln
+bin/
+obj/
