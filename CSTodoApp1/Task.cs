@@ -3,7 +3,7 @@ namespace Task
     public class Task
     {
         // the id of the task within the list
-        public short ID;
+        public int ID;
         // the literal description of the task
         public string Description;
         // the timestamp for when the task was created
@@ -13,7 +13,7 @@ namespace Task
 
         // constuctor for creating an existing task
         // usually used for ingesting multiple tasks via TaskManager.ReadCSV
-        public Task(short ID, string Description, DateTime TimeStamp, bool completion)
+        public Task(int ID, string Description, DateTime TimeStamp, bool completion)
         {
             this.ID = ID;
             this.Description = Description;
@@ -23,7 +23,7 @@ namespace Task
 
         // constructor for creating a new task
         // TODO: revisit for potential dynamic ID addition
-        public Task(short ID, string Description)
+        public Task(int ID, string Description)
         {
             this.ID = ID;
             this.Description = Description;

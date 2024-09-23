@@ -25,7 +25,7 @@ namespace TaskManager
 
                     var i = 0;
                     // Declare variables outside the loop
-                    short taskId = 0;
+                    int taskId = 0;
                     string taskDescription = string.Empty;
                     DateTime taskDateTime = DateTime.MinValue;
                     bool taskCompletion = false;
@@ -45,7 +45,7 @@ namespace TaskManager
                         switch (i)
                         {
                             case 0:
-                                taskId = short.Parse(value);
+                                taskId = int.Parse(value);
                                 break;
                             case 1:
                                 taskDescription = value;
@@ -65,7 +65,7 @@ namespace TaskManager
                     }
                     if (i == 4)
                     {
-                        Console.WriteLine($"ID: {taskId:g}, Description: {taskDescription:g}, Timestamp: {taskDateTime:g}, Completed: {taskCompletion:g}"); // debug, keep till prod
+                        // Console.WriteLine($"ID: {taskId:g}, Description: {taskDescription:g}, Timestamp: {taskDateTime:g}, Completed: {taskCompletion:g}"); // debug, keep till prod
                         tasks.Add(new Task.Task(taskId, taskDescription, taskDateTime, taskCompletion));
                     }
 
@@ -76,6 +76,24 @@ namespace TaskManager
                 Console.WriteLine($"An error occurred while reading the CSV: {ex.Message}");
             }
 
+        }
+
+        //TODO: implement passing vars for listing a single item or all items and change default to only listing incomlpete items.
+        // lists all tasks in the tasklist
+        public void ListTasks()
+        {
+            foreach (var task in tasks)
+            {
+                Console.WriteLine($"ID: {task.ID:g}, Description: {task.Description:g}, Timestamp: {task.CreationTimeStamp:g}, Completed: {task.Completed:g}");
+            }
+        }
+
+        // adds a task to the tasklist
+        public void AddTask(string description)
+        {
+            // change this to use the GetLastID func to calculate the correct ID
+            var newTask = new Task.Task(tasks.Count, description);
+            tasks.Add(newTask);
         }
 
         public TaskManager(string csvFilePath)
