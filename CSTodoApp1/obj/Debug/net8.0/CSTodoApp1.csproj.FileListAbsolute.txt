@@ -1,0 +1,14 @@
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/bin/Debug/net8.0/CSTodoApp1
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/bin/Debug/net8.0/CSTodoApp1.deps.json
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/bin/Debug/net8.0/CSTodoApp1.runtimeconfig.json
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/bin/Debug/net8.0/CSTodoApp1.dll
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/bin/Debug/net8.0/CSTodoApp1.pdb
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/obj/Debug/net8.0/CSTodoApp1.GeneratedMSBuildEditorConfig.editorconfig
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/obj/Debug/net8.0/CSTodoApp1.AssemblyInfoInputs.cache
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/obj/Debug/net8.0/CSTodoApp1.AssemblyInfo.cs
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/obj/Debug/net8.0/CSTodoApp1.csproj.CoreCompileInputs.cache
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/obj/Debug/net8.0/CSTodoApp1.dll
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/obj/Debug/net8.0/refint/CSTodoApp1.dll
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/obj/Debug/net8.0/CSTodoApp1.pdb
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/obj/Debug/net8.0/CSTodoApp1.genruntimeconfig.cache
+/Users/bekian/Code/cSharp learning/csTodoApp/CSTodoApp1/obj/Debug/net8.0/ref/CSTodoApp1.dll
