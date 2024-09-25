@@ -37,10 +37,5 @@ namespace Task
             Completed = true;
         }
 
-        // public void Delete()
-        // {
-        //     ~Task();
-        // }
-
     }
 }

@@ -6,6 +6,7 @@ namespace TaskManager
     class TaskManager
     {
         public List<Task.Task> tasks = new List<Task.Task>();
+        private string FilePath = "";
 
         private void ReadCSV(string filePath)
         {
@@ -75,7 +76,7 @@ namespace TaskManager
             {
                 Console.WriteLine($"An error occurred while reading the CSV: {ex.Message}");
             }
-
+            FilePath = filePath;
         }
 
         //TODO: implement passing vars for listing a single item or all items and change default to only listing incomlpete items.
@@ -86,19 +87,72 @@ namespace TaskManager
             {
                 Console.WriteLine($"ID: {task.ID:g}, Description: {task.Description:g}, Timestamp: {task.CreationTimeStamp:g}, Completed: {task.Completed:g}");
             }
+            Console.WriteLine();
         }
 
         // adds a task to the tasklist
         public void AddTask(string description)
         {
             // change this to use the GetLastID func to calculate the correct ID
-            var newTask = new Task.Task(tasks.Count, description);
+            var newTask = new Task.Task(tasks.Count + 1, description);
             tasks.Add(newTask);
+        }
+
+        // completes a task given an ID
+        public void CompleteTask(int ID)
+        {
+            tasks[ID - 1].Complete();
+        }
+
+        // deletes a task from the list via ID
+        public void DeleteTask(int ID)
+        {
+            tasks.RemoveAt(ID - 1);
+        }
+
+        // logs the command usage for all the commands
+        public static void Help()
+        {
+            Console.WriteLine("Commands:");
+            Console.WriteLine("add - add a new task to the list");
+            Console.WriteLine("list - list all tasks");
+            Console.WriteLine("complete - mark a task as complete");
+            Console.WriteLine("delete - delete a task");
+            Console.WriteLine("help - list all commands");
+        }
+
+        // a function that saves the tasklist into csv format
+        public void SaveCSV()
+        {
+            try
+            {
+                using (var writer = new StreamWriter(FilePath))
+                {
+                    writer.WriteLine("ID,Task,Date,Completed");
+                    foreach (var task in tasks)
+                    {
+                        // convert the dateTime value to unix time in seconds (this program parses it as unix time in seconds)
+                        long unixTimeSeconds = new DateTimeOffset(task.CreationTimeStamp).ToUnixTimeSeconds();
+                        writer.WriteLine($"{task.ID},{task.Description},{unixTimeSeconds},{task.Completed}");
+                    }
+                }
+                Console.WriteLine($"Tasks saved to {FilePath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while saving the CSV: {ex.Message}");
+            }
         }
 
         public TaskManager(string csvFilePath)
         {
             ReadCSV(csvFilePath);
+            // list tasks
+            // ListTasks();
+            // add a task
+            // AddTask("task sample");
+            // CompleteTask(5);
+            // DeleteTask(5);
         }
     }
 }
