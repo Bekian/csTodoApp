@@ -8,28 +8,40 @@ using TaskManager;
 class Project
 {
 
-    // continue working on building out arg parsing
-    static void ProcessArgs(string args)
-    {
-        switch (args)
-        {
-            case "list":
-                Console.WriteLine("you used the list command!");
-                break;
-            case "add":
-                Console.WriteLine("you used the add command!");
-                break;
-            default:
-                break;
-        }
-    }
+    public TaskManager.TaskManager tasks = new("data.csv");
 
     // continue working on building out parsing, condense if possible
-    static void ProcessArgs(string[] args)
+    void ProcessArgs(string[] args)
     {
         switch (args[0])
         {
             case "list":
+                if (args.Length > 1)
+                {
+                    switch (args[1])
+                    {
+                        case "--all":
+                            // call taskmanager.list(-all) or whatever
+                            tasks.ListTasks(true);
+                            break;
+                        case "-a":
+                            // call taskmanager.list(-all) or whatever
+                            tasks.ListTasks(true);
+                            break;
+                        case "--item":
+                            // call taskmanager.list.id(id)
+                            tasks.ListTasks(int.Parse(args[2]));
+                            break;
+                        case "-i":
+                            // call taskmanager.ListTasks(id)
+                            tasks.ListTasks(int.Parse(args[2]));
+                            break;
+                        default:
+                            // no additional args were used, so we use the basic list function
+                            tasks.ListTasks();
+                            break;
+                    }
+                }
                 Console.WriteLine("you used the list command!");
                 break;
             case "add":
@@ -42,13 +54,12 @@ class Project
 
     static void Main(string[] args)
     {
-        var tasks = new TaskManager.TaskManager("data.csv");
-
+        Project project = new();
         if (args.Length >= 1)
         {
             Console.WriteLine("cli args picked");
             // process args here
-            ProcessArgs(args);
+            project.ProcessArgs(args);
         }
         else
         {
@@ -56,21 +67,20 @@ class Project
             var exitCondition = false;
             while (exitCondition == false)
             {
-                Console.WriteLine("enter an input:");
+                Console.WriteLine("enter an input or press enter to exit:");
                 var userInput = Console.ReadLine();
                 // process args
                 if (userInput == null || userInput == "")
                 {
-                    // this should be unreachable
-                    Console.WriteLine("No user input provided");
+                    Console.WriteLine("No input provided, exiting.");
                     break;
                 }
-                ProcessArgs(userInput);
+                project.ProcessArgs(userInput.Split(" "));
             }
         }
 
         // var input = Console.ReadLine();
         // Console.WriteLine($"user input: {input:g}");
-        tasks.SaveCSV();
+        project.tasks.SaveCSV();
     }
 }

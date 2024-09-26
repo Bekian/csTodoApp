@@ -85,9 +85,42 @@ namespace TaskManager
         {
             foreach (var task in tasks)
             {
-                Console.WriteLine($"ID: {task.ID:g}, Description: {task.Description:g}, Timestamp: {task.CreationTimeStamp:g}, Completed: {task.Completed:g}");
+                if (task.Completed)
+                {
+                    continue;
+                }
+                else
+                {
+                    Console.WriteLine($"ID: {task.ID:g}, Description: {task.Description:g}, Timestamp: {task.CreationTimeStamp:g}, Completed: {task.Completed:g}");
+                }
             }
             Console.WriteLine();
+        }
+
+        // list a singular task by ID
+        public void ListTasks(int ID)
+        {
+            var task = tasks[ID - 1]; // this needs to be validated
+            Console.WriteLine($"ID: {task.ID:g}, Description: {task.Description:g}, Timestamp: {task.CreationTimeStamp:g}, Completed: {task.Completed:g}");
+            Console.WriteLine();
+        }
+
+        // lists all tasks 
+        public void ListTasks(bool all)
+        {
+            if (all)
+            {
+                foreach (var task in tasks)
+                {
+                    Console.WriteLine($"ID: {task.ID:g}, Description: {task.Description:g}, Timestamp: {task.CreationTimeStamp:g}, Completed: {task.Completed:g}");
+
+                }
+                Console.WriteLine();
+            }
+            else
+            {
+                ListTasks();
+            }
         }
 
         // adds a task to the tasklist
