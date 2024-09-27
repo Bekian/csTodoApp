@@ -37,15 +37,55 @@ class Project
                             tasks.ListTasks(int.Parse(args[2]));
                             break;
                         default:
-                            // no additional args were used, so we use the basic list function
-                            tasks.ListTasks();
+                            // no correct args were used, throw error message
+                            Console.WriteLine($"args \"{args[1]}\" not valid, try again. Use the help command for correct usage. e.g. `help list`");
                             break;
                     }
                 }
-                Console.WriteLine("you used the list command!");
+                else
+                {
+                    // list tasks when no args are provided
+                    tasks.ListTasks();
+                }
+                Console.WriteLine("you used the list command!"); // leave till prod
                 break;
             case "add":
-                Console.WriteLine("you used the add command!");
+                Console.WriteLine(args.Length);
+                if (args.Length < 2)
+                {
+                    Console.WriteLine("No task description provided, try again. Use the help command or correct usage. e.g. `help add`");
+                    break;
+                }
+                // provided a "validated" task description so we join the string args and add the task
+                var newTaskDescription = string.Join(" ", args[1..]);
+                tasks.AddTask(newTaskDescription);
+                break;
+            case "complete":
+                // validate the ID
+                int ID;
+                if (args.Length == 2)
+                {
+                    // try to parse the ID, if it succeeds use that to complete the task
+                    var _ = int.TryParse(args[1], out ID);
+                    // TODO: otherwise, throw an error message here
+                    tasks.CompleteTask(ID - 1);
+                }
+                break;
+            case "delete":
+                // validate the ID
+                // TODO: see if this declaration can be moved
+                int ID2;
+                if (args.Length == 2)
+                {
+                    // try to parse the ID, if it succeeds use that to delete the task
+                    var _ = int.TryParse(args[1], out ID2);
+                    // TODO: otherwise, throw an error message here
+                    tasks.DeleteTask(ID2 - 1);
+                }
+                break;
+            case "help":
+                // TODO: refactor this to utilize help args
+                TaskManager.TaskManager.Help(); // call Help method from TaskManager
                 break;
             default:
                 break;
