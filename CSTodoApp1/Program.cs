@@ -3,12 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using Task;
-using TaskManager;
+using CSTodoApp1;
 
 class Project
 {
 
-    public TaskManager.TaskManager tasks = new("data.csv");
+    public CSTodoApp1.TaskManager tasks = new("data.csv");
 
     // continue working on building out parsing, condense if possible
     void ProcessArgs(string[] args)
@@ -42,23 +42,17 @@ class Project
                             break;
                     }
                 }
-                else
-                {
-                    // list tasks when no args are provided
-                    tasks.ListTasks();
-                }
-                Console.WriteLine("you used the list command!"); // leave till prod
+                // list tasks when no args are provided
+                tasks.ListTasks();
                 break;
             case "add":
-                Console.WriteLine(args.Length);
                 if (args.Length < 2)
                 {
                     Console.WriteLine("No task description provided, try again. Use the help command or correct usage. e.g. `help add`");
                     break;
                 }
-                // provided a "validated" task description so we join the string args and add the task
-                var newTaskDescription = string.Join(" ", args[1..]);
-                tasks.AddTask(newTaskDescription);
+                // join the string args and add the task
+                tasks.AddTask(string.Join(" ", args[1..]));
                 break;
             case "complete":
                 // validate the ID
@@ -66,8 +60,13 @@ class Project
                 if (args.Length == 2)
                 {
                     // try to parse the ID, if it succeeds use that to complete the task
-                    var _ = int.TryParse(args[1], out ID);
-                    // TODO: otherwise, throw an error message here
+                    var validID = int.TryParse(args[1], out ID);
+                    // otherwise, throw an error message here
+                    if (!validID)
+                    {
+                        Console.WriteLine($"Invalid ID provided: {args[1]}, try again.");
+                        break;
+                    }
                     tasks.CompleteTask(ID - 1);
                 }
                 break;
@@ -78,14 +77,21 @@ class Project
                 if (args.Length == 2)
                 {
                     // try to parse the ID, if it succeeds use that to delete the task
-                    var _ = int.TryParse(args[1], out ID2);
-                    // TODO: otherwise, throw an error message here
+                    var validID = int.TryParse(args[1], out ID2);
+                    // otherwise, throw an error message here
+                    if (!validID)
+                    {
+                        Console.WriteLine($"Invalid ID provided: {args[1]}, try again.");
+                        break;
+                    }
                     tasks.DeleteTask(ID2 - 1);
                 }
                 break;
             case "help":
-                // TODO: refactor this to utilize help args
-                TaskManager.TaskManager.Help(); // call Help method from TaskManager
+                // if there are more than 2 args we know the help command was used with an arg, and we can send that to the function
+                if (args.Length >= 2) { CSTodoApp1.TaskManager.Help(args[1..]); }
+                // call Help method from TaskManager 
+                else { CSTodoApp1.TaskManager.Help(); }
                 break;
             default:
                 break;
@@ -97,30 +103,26 @@ class Project
         Project project = new();
         if (args.Length >= 1)
         {
-            Console.WriteLine("cli args picked");
-            // process args here
+            // process cli args here
             project.ProcessArgs(args);
         }
         else
         {
-            Console.WriteLine("repl picked");
-            var exitCondition = false;
-            while (exitCondition == false)
+            // handle repl
+            while (true)
             {
                 Console.WriteLine("enter an input or press enter to exit:");
                 var userInput = Console.ReadLine();
-                // process args
                 if (userInput == null || userInput == "")
                 {
-                    Console.WriteLine("No input provided, exiting.");
+                    Console.WriteLine("No input provided, exiting...");
                     break;
                 }
+                // process repl args
                 project.ProcessArgs(userInput.Split(" "));
             }
         }
 
-        // var input = Console.ReadLine();
-        // Console.WriteLine($"user input: {input:g}");
         project.tasks.SaveCSV();
     }
 }
