@@ -92,9 +92,16 @@ namespace CSTodoApp1
         // list a singular task by ID
         public void ListTasks(int ID)
         {
-            var task = tasks[ID - 1];
-            Console.WriteLine($"ID: {task.ID:g}, Description: {task.Description:g}, Timestamp: {task.CreationTimeStamp:g}, Completed: {task.Completed:g}");
-            Console.WriteLine();
+            var task = tasks.FirstOrDefault(t => t.ID == ID);
+            if (task != null)
+            {
+                Console.WriteLine($"ID: {task.ID:g}, Description: {task.Description:g}, Timestamp: {task.CreationTimeStamp:g}, Completed: {task.Completed:g}");
+                Console.WriteLine();
+            }
+            else
+            {
+                Console.WriteLine($"Task with ID {ID} not found.");
+            }
         }
 
         // lists all tasks 
@@ -114,7 +121,7 @@ namespace CSTodoApp1
         // adds a task to the tasklist
         public void AddTask(string description)
         {
-            var lastTaskID = tasks.Last().ID;
+            var lastTaskID = tasks.Last().ID + 1;
             var newTask = new Task.Task(lastTaskID, description);
             tasks.Add(newTask);
         }
@@ -122,13 +129,38 @@ namespace CSTodoApp1
         // completes a task given an ID
         public void CompleteTask(int ID)
         {
-            tasks[ID - 1].Complete();
+            // find the first task that matches the given ID in the list or return null
+            var task = tasks.FirstOrDefault(t => t.ID == ID);
+            if (task != null)
+            {
+                if (!task.Completed)
+                {
+                    Console.WriteLine($"Task number {ID} {task.Description} completed.");
+                    task.Complete(); // complete the found task
+                    return;
+                }
+                Console.WriteLine($"Task number {ID} {task.Description} already completed.");
+            }
+            else
+            {
+                Console.WriteLine($"Task with ID {ID} not found.");
+            }
         }
 
         // deletes a task from the list via ID
         public void DeleteTask(int ID)
         {
-            tasks.RemoveAt(ID - 1);
+            // use the same method as above to remove an ID if found
+            var task = tasks.FirstOrDefault(t => t.ID == ID);
+            if (task != null)
+            {
+                Console.WriteLine($"Task: {task.Description} deleted.");
+                tasks.RemoveAt(ID - 1); ; // delete the found task
+            }
+            else
+            {
+                Console.WriteLine($"Task with ID {ID} not found.");
+            }
         }
 
         // logs the command usage for all the commands
@@ -196,11 +228,12 @@ namespace CSTodoApp1
                     foreach (var task in tasks)
                     {
                         // convert the dateTime value to unix time in seconds (this program parses it as unix time in seconds)
-                        long unixTimeSeconds = new DateTimeOffset(task.CreationTimeStamp).ToUnixTimeSeconds();
+                        // also subtract 5 hours due to conversion issue
+                        long unixTimeSeconds = new DateTimeOffset(task.CreationTimeStamp.AddHours(-5)).ToUnixTimeSeconds();
                         writer.WriteLine($"{task.ID},{task.Description},{unixTimeSeconds},{task.Completed}");
                     }
                 }
-                Console.WriteLine($"Tasks saved to {FilePath}");
+                // Console.WriteLine($"Tasks saved to {FilePath}");
             }
             catch (Exception ex)
             {
@@ -208,6 +241,7 @@ namespace CSTodoApp1
             }
         }
 
+        // read provided csv file when the task manager is created
         public TaskManager(string csvFilePath)
         {
             ReadCSV(csvFilePath);

@@ -8,11 +8,14 @@ using CSTodoApp1;
 class Project
 {
 
-    public CSTodoApp1.TaskManager tasks = new("data.csv");
+    public TaskManager tasks = new("data.csv");
 
     // continue working on building out parsing, condense if possible
     void ProcessArgs(string[] args)
     {
+        // declare ID at the beginning for reuse, it's used for some commands
+        int ID;
+
         switch (args[0])
         {
             case "list":
@@ -29,21 +32,47 @@ class Project
                             tasks.ListTasks(true);
                             break;
                         case "--item":
-                            // call taskmanager.list.id(id)
-                            tasks.ListTasks(int.Parse(args[2]));
+                            // call taskmanager.ListTasks(id)
+                            if (args.Length != 3)
+                            {
+                                Console.WriteLine($"Invalid args length provided: {args.Length}, expected 3 missing valid ID");
+                            }
+                            else
+                            {
+                                var validID = int.TryParse(args[2], out ID);
+                                // otherwise, throw an error message here
+                                if (!validID)
+                                {
+                                    Console.WriteLine($"Invalid ID provided: {args[2]} NaN, try again.");
+                                    break;
+                                }
+                                tasks.ListTasks(ID);
+                            }
                             break;
                         case "-i":
                             // call taskmanager.ListTasks(id)
-                            tasks.ListTasks(int.Parse(args[2]));
+                            if (args.Length != 3)
+                            {
+                                Console.WriteLine($"Invalid args length provided: {args.Length}, expected 3, missing valid ID");
+                            }
+                            else
+                            {
+                                var validID = int.TryParse(args[2], out ID);
+                                // otherwise, throw an error message here
+                                if (!validID)
+                                {
+                                    Console.WriteLine($"Invalid ID provided: {args[2]} NaN, try again.");
+                                    break;
+                                }
+                                tasks.ListTasks(ID);
+                            }
                             break;
                         default:
                             // no correct args were used, throw error message
-                            Console.WriteLine($"args \"{args[1]}\" not valid, try again. Use the help command for correct usage. e.g. `help list`");
+                            Console.WriteLine($"Invalid args: \"{args[1]}\" not valid, try again. Use the help command for correct usage. e.g. `help list`");
                             break;
                     }
                 }
-                // list tasks when no args are provided
-                tasks.ListTasks();
                 break;
             case "add":
                 if (args.Length < 2)
@@ -56,7 +85,6 @@ class Project
                 break;
             case "complete":
                 // validate the ID
-                int ID;
                 if (args.Length == 2)
                 {
                     // try to parse the ID, if it succeeds use that to complete the task
@@ -67,31 +95,29 @@ class Project
                         Console.WriteLine($"Invalid ID provided: {args[1]}, try again.");
                         break;
                     }
-                    tasks.CompleteTask(ID - 1);
+                    tasks.CompleteTask(ID);
                 }
                 break;
             case "delete":
                 // validate the ID
-                // TODO: see if this declaration can be moved
-                int ID2;
                 if (args.Length == 2)
                 {
                     // try to parse the ID, if it succeeds use that to delete the task
-                    var validID = int.TryParse(args[1], out ID2);
+                    var validID = int.TryParse(args[1], out ID);
                     // otherwise, throw an error message here
                     if (!validID)
                     {
                         Console.WriteLine($"Invalid ID provided: {args[1]}, try again.");
                         break;
                     }
-                    tasks.DeleteTask(ID2 - 1);
+                    tasks.DeleteTask(ID - 1);
                 }
                 break;
             case "help":
                 // if there are more than 2 args we know the help command was used with an arg, and we can send that to the function
-                if (args.Length >= 2) { CSTodoApp1.TaskManager.Help(args[1..]); }
+                if (args.Length >= 2) { TaskManager.Help(args[1..]); }
                 // call Help method from TaskManager 
-                else { CSTodoApp1.TaskManager.Help(); }
+                else { TaskManager.Help(); }
                 break;
             default:
                 break;
