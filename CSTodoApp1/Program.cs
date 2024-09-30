@@ -27,7 +27,7 @@ class Project
                             // call taskmanager.list(-all) or whatever
                             tasks.ListTasks(true);
                             break;
-                        case "-a":
+                        case "--a":
                             // call taskmanager.list(-all) or whatever
                             tasks.ListTasks(true);
                             break;
@@ -49,7 +49,7 @@ class Project
                                 tasks.ListTasks(ID);
                             }
                             break;
-                        case "-i":
+                        case "--i":
                             // call taskmanager.ListTasks(id)
                             if (args.Length != 3)
                             {
@@ -72,6 +72,11 @@ class Project
                             Console.WriteLine($"Invalid args: \"{args[1]}\" not valid, try again. Use the help command for correct usage. e.g. `help list`");
                             break;
                     }
+                }
+                else
+                {
+                    // run list if no args are provided
+                    tasks.ListTasks();
                 }
                 break;
             case "add":
@@ -97,6 +102,10 @@ class Project
                     }
                     tasks.CompleteTask(ID);
                 }
+                else
+                {
+                    Console.WriteLine($"Invalid args length provided: {args.Length}, expected 2, missing valid ID");
+                }
                 break;
             case "delete":
                 // validate the ID
@@ -112,6 +121,10 @@ class Project
                     }
                     tasks.DeleteTask(ID - 1);
                 }
+                else
+                {
+                    Console.WriteLine($"Invalid args length provided: {args.Length}, expected 2, missing valid ID");
+                }
                 break;
             case "help":
                 // if there are more than 2 args we know the help command was used with an arg, and we can send that to the function
@@ -120,6 +133,7 @@ class Project
                 else { TaskManager.Help(); }
                 break;
             default:
+                Console.WriteLine($"Invalid args: \"{string.Join(" ", args)}\" not valid, try again. Use the `help` command for command usage.");
                 break;
         }
     }

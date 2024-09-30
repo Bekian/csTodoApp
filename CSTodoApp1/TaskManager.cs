@@ -19,7 +19,7 @@ namespace CSTodoApp1
                     if (line == null)
                     {
                         // when the line is null then let the user know
-                        Console.WriteLine("readlines found null line, check source for error");
+                        Console.WriteLine("CSV Read error: readlines found null line, check source for error");
                         return;
                     }
                     var values = line.Split(",");
@@ -39,7 +39,7 @@ namespace CSTodoApp1
                         {
                             case 0:
                                 // `i` might not always equal the ID so we need to parse the value, 
-                                // such as in the event where a task in the middle of the list is deleted
+                                // like in the event where a task in the middle of the list is deleted
                                 taskId = int.Parse(value);
                                 break;
                             case 1:
@@ -79,6 +79,7 @@ namespace CSTodoApp1
         // this method only lists incomplete tasks
         public void ListTasks()
         {
+            Console.WriteLine();
             foreach (var task in tasks)
             {
                 if (!task.Completed)
@@ -92,14 +93,18 @@ namespace CSTodoApp1
         // list a singular task by ID
         public void ListTasks(int ID)
         {
+            // look for a specific task with the provided ID
             var task = tasks.FirstOrDefault(t => t.ID == ID);
+            // if found then log task
             if (task != null)
             {
+                Console.WriteLine();
                 Console.WriteLine($"ID: {task.ID:g}, Description: {task.Description:g}, Timestamp: {task.CreationTimeStamp:g}, Completed: {task.Completed:g}");
                 Console.WriteLine();
             }
             else
             {
+                // else log error
                 Console.WriteLine($"Task with ID {ID} not found.");
             }
         }
@@ -107,10 +112,11 @@ namespace CSTodoApp1
         // lists all tasks 
         public void ListTasks(bool all)
         {
-            // in the case that the bool provided is false, we call the default ListTasks method
+            // in the case that the bool provided is false, we call the default ListTasks method and return
             if (!all) { ListTasks(); return; }
 
-            // print each task in the array
+            Console.WriteLine();
+            // print each task in the list
             foreach (var task in tasks)
             {
                 Console.WriteLine($"ID: {task.ID:g}, Description: {task.Description:g}, Timestamp: {task.CreationTimeStamp:g}, Completed: {task.Completed:g}");
@@ -121,8 +127,11 @@ namespace CSTodoApp1
         // adds a task to the tasklist
         public void AddTask(string description)
         {
+            // get the last task ID
             var lastTaskID = tasks.Last().ID + 1;
+            // create the new task
             var newTask = new Task.Task(lastTaskID, description);
+            // add it to the tasklist
             tasks.Add(newTask);
         }
 
@@ -210,7 +219,7 @@ namespace CSTodoApp1
             }
         }
 
-        // alias to help in the case that string args are provided 
+        // alias to help when string args are provided 
         // it joins the args to a single string then calls the function for the user
         public static void Help(string[] args)
         {
@@ -222,18 +231,15 @@ namespace CSTodoApp1
         {
             try
             {
-                using (var writer = new StreamWriter(FilePath))
+                using var writer = new StreamWriter(FilePath);
+                writer.WriteLine("ID,Task,Date,Completed");
+                foreach (var task in tasks)
                 {
-                    writer.WriteLine("ID,Task,Date,Completed");
-                    foreach (var task in tasks)
-                    {
-                        // convert the dateTime value to unix time in seconds (this program parses it as unix time in seconds)
-                        // also subtract 5 hours due to conversion issue
-                        long unixTimeSeconds = new DateTimeOffset(task.CreationTimeStamp.AddHours(-5)).ToUnixTimeSeconds();
-                        writer.WriteLine($"{task.ID},{task.Description},{unixTimeSeconds},{task.Completed}");
-                    }
+                    // convert the dateTime value to unix time in seconds (this program parses it as unix time in seconds)
+                    // also subtract 5 hours due to conversion issue
+                    long unixTimeSeconds = new DateTimeOffset(task.CreationTimeStamp.AddHours(-5)).ToUnixTimeSeconds();
+                    writer.WriteLine($"{task.ID},{task.Description},{unixTimeSeconds},{task.Completed}");
                 }
-                // Console.WriteLine($"Tasks saved to {FilePath}");
             }
             catch (Exception ex)
             {
